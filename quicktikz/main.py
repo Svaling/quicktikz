@@ -14,17 +14,19 @@ from quicktikz.gui import MainWindow
 def gui():
     app = QApplication(sys.argv)
 
- #   translator = QTranslator()
- #   if translator.load('editor_'+ QLocale.system().name()+'.qm',":/translations/"):
- #       app.installTranslator(translator)
-#
- #   translator_qt = QTranslator()
- #   if translator_qt.load('qt_'+ QLocale.system().name()+'.qm',":/translations/"):
-  #      print('i found qt')
-  #      app.installTranslator(translator_qt)
-
-
     mainwindow = MainWindow()
+
+    translator = QTranslator()
+    if translator.load('quicktikz_'+ QLocale.system().name()+'.qm',":/translations/"):
+        app.installTranslator(translator)
+
+#
+    translator_qt = QTranslator()
+    if translator_qt.load('qt_'+ QLocale.system().name()+'.qm',":/translations/"):
+        print('i found qt')
+        app.installTranslator(translator_qt)
+
+
     mainwindow.setWindowTitle('drawing in tikz')
     mainwindow.show()
 

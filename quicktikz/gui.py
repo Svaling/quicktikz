@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import  *
 from PyQt5.uic import loadUi
 
 from quicktikz import main_rc
+import os
 
 def ui_path(module,uiname):
     from pkg_resources import resource_filename
@@ -47,28 +48,32 @@ class MainWindow(QMainWindow):
 
         ###
         self.textEdit.title_changed.connect(self.setCurrentFile)
+        self.textEdit.textChanged.connect(self.setWindowModified)
 
+##################################file save
         self.mainUi.action_New.triggered.connect(self.textEdit.newFile)
         self.mainUi.action_Open.triggered.connect(self.textEdit.openFile)
 
         self.mainUi.action_Save.triggered.connect(self.save)
         self.mainUi.action_SaveAs.triggered.connect(self.saveAs)
+#########################image save
+        self.mainUi.action_SavePdf.triggered.connect(self.savePdf)
+        self.mainUi.action_SavePng.triggered.connect(self.savePng)
 
+############textedit cut copy and paste
         self.mainUi.action_Cut.triggered.connect(self.textEdit.cut)
         self.mainUi.action_Copy.triggered.connect(self.textEdit.copy)
         self.mainUi.action_Paste.triggered.connect(self.textEdit.paste)
-
 
         self.getaction_Cut().setEnabled(False)
         self.getaction_Copy().setEnabled(False)
         self.textEdit.copyAvailable.connect(self.getaction_Cut().setEnabled)
         self.textEdit.copyAvailable.connect(self.getaction_Copy().setEnabled)
 
+############statusbar
         self.statusBar().showMessage(self.tr("Ready..."))
 
         self.readSettings()
-
-        self.textEdit.textChanged.connect(self.setWindowModified)
 
         self.setCurrentFile('')
 
@@ -120,21 +125,45 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def about(self):
         QMessageBox.about(self, self.tr("About Application"),
-                self.tr("The <b>Application</b> example demonstrates how to write "
-                "modern GUI applications using Qt, with a menu bar, "
-                "toolbars, and a status bar."))
+                self.tr("this program help you create the tikz drawing picture quickly."))
 
     @pyqtSlot()
     def save(self):
         if self.curFile:
-            return self.textEdit.saveFile(self.curFile)
-        return self.saveAs()
+            self.textEdit.saveFile(self.curFile)
+        else:
+            self.saveAs()
 
     @pyqtSlot()
     def saveAs(self):
         fileName, _ = QFileDialog.getSaveFileName(self)
         if fileName:
-            return self.textEdit.saveFile(fileName)
+            self.textEdit.saveFile(fileName)
+            self.setCurrentFile(fileName)
+
+
+    @pyqtSlot()
+    def savePdf(self):
+        save_path =  QFileDialog.getExistingDirectory(self,
+            self.tr("save Pdf to..."),os.path.expanduser('~'))
+
+        temp_pdffile = os.path.join(os.path.expanduser('~/.config/QuickTikz'),'temp.pdf')
+
+        fileName,_ = os.path.splitext(os.path.basename(self.curFile))
+        import shutil
+        shutil.copyfile(temp_pdffile, os.path.join(save_path,fileName+'.pdf'))
+
+    @pyqtSlot()
+    def savePng(self):
+        save_path =  QFileDialog.getExistingDirectory(self,
+            self.tr("save Png to..."),os.path.expanduser('~'))
+
+        temp_pngfile = os.path.join(os.path.expanduser('~/.config/QuickTikz'),'temp.png')
+
+        fileName,_ = os.path.splitext(os.path.basename(self.curFile))
+        import shutil
+        shutil.copyfile(temp_pngfile, os.path.join(save_path,fileName+'.png'))
+
 
     def readSettings(self):
         settings = QSettings("QuickTikz", "quicktikz")
@@ -150,14 +179,13 @@ class MainWindow(QMainWindow):
 
 
     def setCurrentFile(self, fileName):
-        print('title changed')
         self.curFile = fileName
         self.textEdit.setModified(False)
         if self.curFile:
             shownName = self.strippedName(self.curFile)
         else:
             shownName = 'untitled.txt'
-        self.setWindowTitle("%s-Application" % shownName)
+        self.setWindowTitle("%s-quicktikz" % shownName)
 
 
     def setWindowModified(self):
@@ -246,7 +274,6 @@ class TextEdit(QsciScintilla):
         outf << self.text()
         QApplication.restoreOverrideCursor()
 
-        self.title_changed.emit(fileName);
 
 
 ##############################预览面板

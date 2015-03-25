@@ -13,7 +13,7 @@ except:
 
 setup(
   name='quicktikz',
-  version='0.01',
+  version='0.02',
   description='the software short description',
   long_description=LONG_DESCRIPTION,
   url='https://github.com/a358003542/quicktikz',

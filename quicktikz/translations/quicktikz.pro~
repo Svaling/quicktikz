@@ -1,0 +1,4 @@
+SOURCES += ../main.py  ../__init__.py \
+        ../MainWindow.py
+
+TRANSLATIONS += skeletonQt_zh_CN.ts
