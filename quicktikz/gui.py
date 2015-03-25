@@ -134,11 +134,11 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def dpiIn(self):
-        self.dpi += 20
+        self.dpi += 60
         self.compileFile()
     @pyqtSlot()
     def dpiOut(self):
-        self.dpi -= 20
+        self.dpi -= 60
         self.compileFile()
 
 
@@ -167,7 +167,6 @@ class MainWindow(QMainWindow):
         fileName, _ = QFileDialog.getSaveFileName(self)
         if fileName:
             self.textEdit.saveFile(fileName)
-            self.setCurrentFile(fileName)
 
 
     @pyqtSlot()
@@ -309,6 +308,7 @@ class TextEdit(QsciScintilla):
         QApplication.restoreOverrideCursor()
         file.close()
 
+        self.title_changed.emit(fileName)
 
 ##############################预览面板
 class ImageView(QWidget):
@@ -321,15 +321,28 @@ class ImageView(QWidget):
         self.scene = QGraphicsScene()
         self.mainUi.graphicsView.setScene(self.scene)
 
+        self.viewcount = 0
+
     def loadImage(self,filename):
         pic = QPixmap(filename)
         self.scene.addItem(QGraphicsPixmapItem(pic))
 
     def zoomIn(self):
-        self.mainUi.graphicsView.scale(1.2,1.2)
+        self.mainUi.graphicsView.scale(1.6,1.6)
+        self.viewcount += 1
 
     def zoomOut(self):
-        self.mainUi.graphicsView.scale(0.8,0.8)
+        self.mainUi.graphicsView.scale(0.625,0.625)
+        self.viewcount -= 1
+    def zoomOrigin(self):
+        if self.viewcount > 0 :
+            for i in range(self.viewcount):
+                self.zoomOut()
+        elif self.viewcount < 0 :
+            for i in range(abs(self.viewcount)):
+                self.zoomIn()
+        else:
+            pass
 
 class TemplateChooser(QDialog):
     def __init__(self,parent=None,*args):

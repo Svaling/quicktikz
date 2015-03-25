@@ -40,6 +40,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="pushButton_3">
+       <property name="text">
+        <string>Origin</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="pushButton">
        <property name="text">
         <string>ZoomOut</string>
@@ -97,9 +104,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_3</sender>
+   <signal>clicked()</signal>
+   <receiver>Form</receiver>
+   <slot>zoomOrigin()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>255</x>
+     <y>468</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>351</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>zoomIn()</slot>
   <slot>zoomOut()</slot>
+  <slot>zoomOrigin()</slot>
  </slots>
 </ui>
