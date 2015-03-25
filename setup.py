@@ -13,7 +13,7 @@ except:
 
 setup(
   name='quicktikz',
-  version='0.1',
+  version='0.01',
   description='the software short description',
   long_description=LONG_DESCRIPTION,
   url='https://github.com/a358003542/quicktikz',
@@ -31,10 +31,9 @@ setup(
   'Programming Language :: Python :: 3.4',],
   packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
   include_package_data=True,
-  package_data = {"quicktikz":['quicktikz.tar.gz'],},
+  package_data = {"quicktikz":['main.ui','imageview.ui'],},
 #  install_requires=['click'],
 #  setup_requires,
-#  extras_require={'test': ['pytest'],},
   entry_points = {
  # 'console_scripts' :[ 'quicktikz=quicktikz.main:console',],
   'gui_scripts':['quicktikz=quicktikz.main:gui'],

@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QTranslator,QLocale
 
-from gui import MainWindow
+from quicktikz.gui import MainWindow
 
 #
 def gui():

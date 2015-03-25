@@ -57,6 +57,9 @@
     <addaction name="separator"/>
     <addaction name="action_ZoomIn"/>
     <addaction name="action_ZoomOut"/>
+    <addaction name="separator"/>
+    <addaction name="action_DpiIn"/>
+    <addaction name="action_DpiOut"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
@@ -83,7 +86,7 @@
   </widget>
   <action name="action_New">
    <property name="icon">
-    <iconset resource="editor.qrc">
+    <iconset resource="main.qrc">
      <normaloff>:/icons/new.png</normaloff>:/icons/new.png</iconset>
    </property>
    <property name="text">
@@ -95,7 +98,7 @@
   </action>
   <action name="action_Open">
    <property name="icon">
-    <iconset resource="editor.qrc">
+    <iconset resource="main.qrc">
      <normaloff>:/icons/open.png</normaloff>:/icons/open.png</iconset>
    </property>
    <property name="text">
@@ -107,7 +110,7 @@
   </action>
   <action name="action_Save">
    <property name="icon">
-    <iconset resource="editor.qrc">
+    <iconset resource="main.qrc">
      <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
    </property>
    <property name="text">
@@ -129,7 +132,7 @@
   </action>
   <action name="action_Cut">
    <property name="icon">
-    <iconset resource="editor.qrc">
+    <iconset resource="main.qrc">
      <normaloff>:/icons/cut.png</normaloff>:/icons/cut.png</iconset>
    </property>
    <property name="text">
@@ -138,7 +141,7 @@
   </action>
   <action name="action_Copy">
    <property name="icon">
-    <iconset resource="editor.qrc">
+    <iconset resource="main.qrc">
      <normaloff>:/icons/copy.png</normaloff>:/icons/copy.png</iconset>
    </property>
    <property name="text">
@@ -147,7 +150,7 @@
   </action>
   <action name="action_Paste">
    <property name="icon">
-    <iconset resource="editor.qrc">
+    <iconset resource="main.qrc">
      <normaloff>:/icons/paste.png</normaloff>:/icons/paste.png</iconset>
    </property>
    <property name="text">
@@ -173,15 +176,37 @@
    <property name="text">
     <string>ZoomIn</string>
    </property>
+   <property name="toolTip">
+    <string>ZoomIn the image</string>
+   </property>
   </action>
   <action name="action_ZoomOut">
    <property name="text">
     <string>ZoomOut</string>
    </property>
+   <property name="toolTip">
+    <string>ZoomOut the image</string>
+   </property>
+  </action>
+  <action name="action_DpiIn">
+   <property name="text">
+    <string>DpiIn</string>
+   </property>
+   <property name="toolTip">
+    <string>increase the png dpi</string>
+   </property>
+  </action>
+  <action name="action_DpiOut">
+   <property name="text">
+    <string>DpiOut</string>
+   </property>
+   <property name="toolTip">
+    <string>decrease the png dpi</string>
+   </property>
   </action>
  </widget>
  <resources>
-  <include location="editor.qrc"/>
+  <include location="main.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -6,6 +6,12 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import  *
 from PyQt5.uic import loadUi
 
+from quicktikz import main_rc
+
+def ui_path(module,uiname):
+    from pkg_resources import resource_filename
+    uifile_path = resource_filename(module,uiname)
+    return uifile_path
 
 class MainWindow(QMainWindow):
     def __init__(self,parent=None, *args):
@@ -14,7 +20,7 @@ class MainWindow(QMainWindow):
         self.curFile = ''
         self.dpi = 90
 
-        self.mainUi = loadUi('main.ui', self)
+        self.mainUi = loadUi(ui_path("quicktikz","main.ui"), self)
 
         #中间窗体
         self.mainLayout = QHBoxLayout()
@@ -28,7 +34,11 @@ class MainWindow(QMainWindow):
 
 #############preview
         self.mainUi.action_Compile.triggered.connect(self.compileFile)
-        self.mainUi.action_ZoomIn.triggered.connect(self.zoomIn)
+
+        self.mainUi.action_ZoomIn.triggered.connect(self.previewer.zoomIn)
+        self.mainUi.action_ZoomOut.triggered.connect(self.previewer.zoomOut)
+
+        self.mainUi.action_DpiIn.triggered.connect(self.dpiIn)
 
 #######################editor
         self.mainUi.action_About.triggered.connect(self.about)
@@ -64,42 +74,44 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def compileFile(self):
-        self.dpi = 90
+
+        dpi = self.dpi
+
         self.save()
+
         import os
         import subprocess
-        fileName, fileExt = os.path.splitext(self.curFile)
+        outputdir = os.path.expanduser('~/.config/QuickTikz')
+        if not os.path.exists(outputdir):
+            os.mkdir(outputdir)
+
+        temp_texfile = os.path.join(outputdir,'temp.tex')
+        self.textEdit.saveFile(temp_texfile)#保存一个临时文件
 
 
         subprocess.call(['xelatex','-synctex=1',
-        '--enable-write18','-interaction=nonstopmode',self.curFile])
+        '--enable-write18','-interaction=nonstopmode','-output-directory={outputdir}'.format(outputdir=outputdir),temp_texfile])
 
-        subprocess.call(['wiseimage','-c','png','-d',str(self.dpi),fileName+'.pdf'])
+        temp_pdffile = os.path.join(outputdir,'temp.pdf')
+        subprocess.call(['pdftoppm','-png','-singlefile','-r',str(dpi),temp_pdffile,outputdir+'/temp'])
 
-        self.previewer.loadImage(fileName+'.png')
+        temp_pngfile = os.path.join(outputdir,'temp.png')
+        self.previewer.loadImage(temp_pngfile)
+
 
     @pyqtSlot()
-    def zoomIn(self):
-        self.dpi += 10
-        self.save()
-        import os
-        import subprocess
-        fileName, fileExt = os.path.splitext(self.curFile)
-
-        subprocess.call(['xelatex','-synctex=1',
-        '-interaction=nonstopmode','--enable-write18',self.curFile])
-
-        subprocess.call(['wiseimage','-c','png','-d',str(self.dpi),fileName+'.pdf'])
-
-        self.previewer.loadImage(fileName+'.png')
-
-
-
+    def dpiIn(self):
+        self.dpi += 20
+        self.compileFile()
+    @pyqtSlot()
+    def dpiOut(self):
+        self.dpi -= 20
+        self.compileFile()
 
 
     @pyqtSlot()
     def closeEvent(self, event):
-        if self.maybeSave():
+        if self.textEdit.maybeSave():
             self.writeSettings()
             event.accept()
         else:
@@ -243,17 +255,20 @@ class ImageView(QWidget):
 
         super().__init__(parent, *args)
 
-        self.mainUi = loadUi('imageview.ui', self)
+        self.mainUi = loadUi(ui_path("quicktikz","imageview.ui"), self)
 
         self.scene = QGraphicsScene()
         self.mainUi.graphicsView.setScene(self.scene)
 
     def loadImage(self,filename):
-
         pic = QPixmap(filename)
         self.scene.addItem(QGraphicsPixmapItem(pic))
 
+    def zoomIn(self):
+        self.mainUi.graphicsView.scale(1.2,1.2)
 
+    def zoomOut(self):
+        self.mainUi.graphicsView.scale(0.8,0.8)
 
 
 
