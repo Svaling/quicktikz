@@ -9,5 +9,6 @@
 
     <file>translations/qt_zh_CN.qm</file>
     <file>translations/quicktikz_zh_CN.qm</file>
+
 </qresource>
 </RCC>

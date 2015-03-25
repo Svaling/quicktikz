@@ -14,12 +14,23 @@ def ui_path(module,uiname):
     uifile_path = resource_filename(module,uiname)
     return uifile_path
 
+default_template = r'''% !Mode:: "TeX:UTF-8"%確保文檔utf-8編碼
+\documentclass[tikz,border=2pt]{standalone}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\setCJKmainfont[BoldFont=Adobe 黑体 Std,
+ItalicFont=Adobe 楷体 Std]{Adobe 宋体 Std}
+\setCJKsansfont{Adobe 黑体 Std}
+\setCJKmonofont{Adobe 楷体 Std}
+'''
+
 class MainWindow(QMainWindow):
     def __init__(self,parent=None, *args):
         super().__init__(parent, *args)
 
         self.curFile = ''
         self.dpi = 90
+        self.template = default_template
 
         self.mainUi = loadUi(ui_path("quicktikz","main.ui"), self)
 
@@ -70,6 +81,10 @@ class MainWindow(QMainWindow):
         self.textEdit.copyAvailable.connect(self.getaction_Cut().setEnabled)
         self.textEdit.copyAvailable.connect(self.getaction_Copy().setEnabled)
 
+###########config
+        self.mainUi.action_Template.triggered.connect(self.choose_template)
+
+
 ############statusbar
         self.statusBar().showMessage(self.tr("Ready..."))
 
@@ -79,20 +94,33 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def compileFile(self):
-
         dpi = self.dpi
 
         self.save()
 
         import os
         import subprocess
-        outputdir = os.path.expanduser('~/.config/QuickTikz')
+        outputdir = os.path.expanduser('~/.config/QuickTikz/output')
         if not os.path.exists(outputdir):
             os.mkdir(outputdir)
 
         temp_texfile = os.path.join(outputdir,'temp.tex')
-        self.textEdit.saveFile(temp_texfile)#保存一个临时文件
 
+
+        file = QFile(temp_texfile)
+        if not file.open(QIODevice.WriteOnly | QIODevice.Text):
+            QMessageBox.warning(self, "Application",
+                    "Cannot write file %s:\n%s." % (fileName, file.errorString()))
+            return False
+
+        outf = QTextStream(file)
+        outf << default_template
+        outf << r"\begin{document}"
+        outf << "\n"
+        outf << self.textEdit.text()
+        outf << "\n"
+        outf << r"\end{document}"
+        file.close()
 
         subprocess.call(['xelatex','-synctex=1',
         '--enable-write18','-interaction=nonstopmode','-output-directory={outputdir}'.format(outputdir=outputdir),temp_texfile])
@@ -163,6 +191,11 @@ class MainWindow(QMainWindow):
         fileName,_ = os.path.splitext(os.path.basename(self.curFile))
         import shutil
         shutil.copyfile(temp_pngfile, os.path.join(save_path,fileName+'.png'))
+
+    @pyqtSlot()
+    def choose_template(self):
+        template_chooser = TemplateChooser()
+        template_chooser.show()
 
 
     def readSettings(self):
@@ -259,6 +292,7 @@ class TextEdit(QsciScintilla):
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.setText(inf.readAll())
         QApplication.restoreOverrideCursor()
+        file.close()
 
         self.title_changed.emit(fileName)
 
@@ -273,7 +307,7 @@ class TextEdit(QsciScintilla):
         QApplication.setOverrideCursor(Qt.WaitCursor)
         outf << self.text()
         QApplication.restoreOverrideCursor()
-
+        file.close()
 
 
 ##############################预览面板
@@ -296,6 +330,14 @@ class ImageView(QWidget):
 
     def zoomOut(self):
         self.mainUi.graphicsView.scale(0.8,0.8)
+
+class TemplateChooser(QDialog):
+    def __init__(self,parent=None,*args):
+        super().__init__(parent,*args)
+
+        self.mainUi = loadUi(ui_path("quicktikz","template.ui"),self)
+
+        self.mainUi.modletext0.setText(default_template)
 
 
 
