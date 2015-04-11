@@ -25,6 +25,7 @@ ItalicFont=Adobe 楷体 Std]{Adobe 宋体 Std}
 '''
 
 class MainWindow(QMainWindow):
+    templates = []
     def __init__(self,parent=None, *args):
         super().__init__(parent, *args)
 
@@ -84,7 +85,6 @@ class MainWindow(QMainWindow):
 ###########config
         self.mainUi.action_Template.triggered.connect(self.choose_template)
 
-
 ############statusbar
         self.statusBar().showMessage(self.tr("Ready..."))
 
@@ -114,7 +114,7 @@ class MainWindow(QMainWindow):
             return False
 
         outf = QTextStream(file)
-        outf << default_template
+        outf << self.template
         outf << r"\begin{document}"
         outf << "\n"
         outf << self.textEdit.text()
@@ -193,9 +193,15 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def choose_template(self):
-        template_chooser = TemplateChooser()
-        template_chooser.show()
+        self.template_chooser = TemplateChooser(templates=self.templates)
+        self.template_chooser.changetemplates.connect(self.change_template)
+        self.template_chooser.show()
 
+    @pyqtSlot(list,int)
+    def change_template(self, templates, index):
+        print(templates)
+        self.templates = templates
+        self.template = self.templates[index]
 
     def readSettings(self):
         settings = QSettings("QuickTikz", "quicktikz")
@@ -203,11 +209,15 @@ class MainWindow(QMainWindow):
         size = settings.value("size", QSize(400, 400))
         self.resize(size)
         self.move(pos)
+        #
+        self.templates = settings.value("templates",[default_template])
 
     def writeSettings(self):
         settings = QSettings("QuickTikz", "quicktikz")
         settings.setValue("pos", self.pos())
         settings.setValue("size", self.size())
+        #templates save
+        settings.setValue("templates",self.templates)
 
 
     def setCurrentFile(self, fileName):
@@ -345,12 +355,33 @@ class ImageView(QWidget):
             pass
 
 class TemplateChooser(QDialog):
-    def __init__(self,parent=None,*args):
+    changetemplates = pyqtSignal(list, int)
+
+    def __init__(self,parent=None,templates=[],*args):
         super().__init__(parent,*args)
 
         self.mainUi = loadUi(ui_path("quicktikz","template.ui"),self)
 
-        self.mainUi.modletext0.setText(default_template)
+        #ok clicked
+        self.mainUi.buttonBox.accepted.connect(self.change_templates)
+
+        for index,editor in enumerate((self.mainUi.modletext0,
+            self.mainUi.modletext1,
+            self.mainUi.modletext2, self.mainUi.modletext3,
+            self.mainUi.modletext4, self.mainUi.modletext5)):
+            editor.setText(templates[index])
+
+    @pyqtSlot()
+    def change_templates(self):
+        current_index = self.mainUi.tabWidget.currentIndex()
+        templates = []
+        for editor in (self.mainUi.modletext0, self.mainUi.modletext1,
+            self.mainUi.modletext2, self.mainUi.modletext3,
+            self.mainUi.modletext4, self.mainUi.modletext5):
+            templates.append(editor.toPlainText())
+
+        self.changetemplates.emit(templates, current_index)
+
 
 
 

@@ -2,20 +2,11 @@
 #-*-coding:utf-8-*-
 
 from setuptools import setup ,find_packages
-import os.path
-
-
-
-try:
-    LONG_DESCRIPTION = open('README.md').read()
-except:
-    LONG_DESCRIPTION = ''
 
 setup(
   name='quicktikz',
-  version='0.03',
+  version='0.04',
   description='the software short description',
-  long_description=LONG_DESCRIPTION,
   url='https://github.com/a358003542/quicktikz',
   author='wanze',
   author_email='a358003542@gmail.com',
