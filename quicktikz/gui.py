@@ -146,11 +146,11 @@ class MainWindow(QMainWindow):
 
         import os
         import subprocess
-        outputdir = os.path.expanduser('~/.config/QuickTikz/output')
-        if not os.path.exists(outputdir):
-            os.mkdir(outputdir)
+        self.outputdir = os.path.expanduser('~/.config/QuickTikz/output')
+        if not os.path.exists(self.outputdir):
+            os.mkdir(self.outputdir)
 
-        temp_texfile = os.path.join(outputdir,'temp.tex')
+        temp_texfile = os.path.join(self.outputdir,'temp.tex')
 
 
         file = QFile(temp_texfile)
@@ -169,12 +169,12 @@ class MainWindow(QMainWindow):
         file.close()
 
         subprocess.call(['xelatex','-synctex=1',
-        '--enable-write18','-interaction=nonstopmode','-output-directory={outputdir}'.format(outputdir=outputdir),temp_texfile])
+        '--enable-write18','-interaction=nonstopmode','-output-directory={outputdir}'.format(outputdir=self.outputdir),temp_texfile])
 
-        temp_pdffile = os.path.join(outputdir,'temp.pdf')
-        subprocess.call(['pdftoppm','-png','-singlefile','-r',str(dpi),temp_pdffile,outputdir+'/temp'])
+        temp_pdffile = os.path.join(self.outputdir,'temp.pdf')
+        subprocess.call(['pdftoppm','-png','-singlefile','-r',str(dpi),temp_pdffile, self.outputdir+'/temp'])
 
-        temp_pngfile = os.path.join(outputdir,'temp.png')
+        temp_pngfile = os.path.join(self.outputdir,'temp.png')
         self.previewer.loadImage(temp_pngfile)
 
 
@@ -220,7 +220,7 @@ class MainWindow(QMainWindow):
         save_path =  QFileDialog.getExistingDirectory(self,
             self.tr("save Pdf to..."),os.path.expanduser('~'))
 
-        temp_pdffile = os.path.join(os.path.expanduser('~/.config/QuickTikz'),'temp.pdf')
+        temp_pdffile = os.path.join(self.outputdir,'temp.pdf')
 
         fileName,_ = os.path.splitext(os.path.basename(self.curFile))
         import shutil
@@ -231,7 +231,7 @@ class MainWindow(QMainWindow):
         save_path =  QFileDialog.getExistingDirectory(self,
             self.tr("save Png to..."),os.path.expanduser('~'))
 
-        temp_pngfile = os.path.join(os.path.expanduser('~/.config/QuickTikz'),'temp.png')
+        temp_pngfile = os.path.join(self.outputdir,'temp.png')
 
         fileName,_ = os.path.splitext(os.path.basename(self.curFile))
         import shutil
