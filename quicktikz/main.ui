@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>801</width>
-    <height>600</height>
+    <width>609</width>
+    <height>533</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>801</width>
+     <width>609</width>
      <height>28</height>
     </rect>
    </property>
@@ -41,6 +41,9 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <addaction name="action_Undo"/>
+    <addaction name="action_Redo"/>
+    <addaction name="separator"/>
     <addaction name="action_Cut"/>
     <addaction name="action_Copy"/>
     <addaction name="action_Paste"/>
@@ -64,18 +67,48 @@
     <addaction name="action_DpiIn"/>
     <addaction name="action_DpiOut"/>
    </widget>
-   <widget class="QMenu" name="menuConfig">
+   <widget class="QMenu" name="menu_Config">
     <property name="title">
-     <string>Config</string>
+     <string>&amp;Config</string>
     </property>
     <addaction name="action_Template"/>
     <addaction name="separator"/>
     <addaction name="action_Options"/>
    </widget>
+   <widget class="QMenu" name="menu_Tikz">
+    <property name="title">
+     <string>&amp;Tikz</string>
+    </property>
+    <widget class="QMenu" name="menu_draw">
+     <property name="title">
+      <string>\draw</string>
+     </property>
+     <addaction name="action_draw_grid"/>
+     <addaction name="action_draw_line"/>
+     <addaction name="action_draw_circle"/>
+     <addaction name="action_draw_ellipse"/>
+     <addaction name="action_draw_arc"/>
+    </widget>
+    <widget class="QMenu" name="menu_shade">
+     <property name="title">
+      <string>\shade</string>
+     </property>
+     <addaction name="action_shade_circle"/>
+    </widget>
+    <addaction name="action_begin_tikzpicture"/>
+    <addaction name="action_begin_scope"/>
+    <addaction name="separator"/>
+    <addaction name="menu_draw"/>
+    <addaction name="menu_shade"/>
+    <addaction name="separator"/>
+    <addaction name="action_command_coordinate"/>
+    <addaction name="action_command_foreach"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
+   <addaction name="menu_Tikz"/>
    <addaction name="menu_Preview"/>
-   <addaction name="menuConfig"/>
+   <addaction name="menu_Config"/>
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -95,6 +128,8 @@
    <addaction name="action_Cut"/>
    <addaction name="action_Copy"/>
    <addaction name="action_Paste"/>
+   <addaction name="action_Undo"/>
+   <addaction name="action_Redo"/>
   </widget>
   <action name="action_New">
    <property name="icon">
@@ -246,6 +281,74 @@
    </property>
    <property name="toolTip">
     <string>Choose Your Template</string>
+   </property>
+  </action>
+  <action name="action_begin_tikzpicture">
+   <property name="text">
+    <string>\begin{tikzpicture}</string>
+   </property>
+  </action>
+  <action name="action_Undo">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/icons/edit-undo.ico</normaloff>:/icons/edit-undo.ico</iconset>
+   </property>
+   <property name="text">
+    <string>undo</string>
+   </property>
+  </action>
+  <action name="action_Redo">
+   <property name="icon">
+    <iconset resource="main.qrc">
+     <normaloff>:/icons/edit-redo.ico</normaloff>:/icons/edit-redo.ico</iconset>
+   </property>
+   <property name="text">
+    <string>redo</string>
+   </property>
+  </action>
+  <action name="action_draw_line">
+   <property name="text">
+    <string>line</string>
+   </property>
+  </action>
+  <action name="action_draw_circle">
+   <property name="text">
+    <string>circle</string>
+   </property>
+  </action>
+  <action name="action_draw_grid">
+   <property name="text">
+    <string>grid</string>
+   </property>
+  </action>
+  <action name="action_draw_ellipse">
+   <property name="text">
+    <string>ellipse</string>
+   </property>
+  </action>
+  <action name="action_draw_arc">
+   <property name="text">
+    <string>arc</string>
+   </property>
+  </action>
+  <action name="action_command_coordinate">
+   <property name="text">
+    <string>\coordinate</string>
+   </property>
+  </action>
+  <action name="action_begin_scope">
+   <property name="text">
+    <string>\begin{scope}</string>
+   </property>
+  </action>
+  <action name="action_command_foreach">
+   <property name="text">
+    <string>\foreach</string>
+   </property>
+  </action>
+  <action name="action_shade_circle">
+   <property name="text">
+    <string>circle</string>
    </property>
   </action>
  </widget>

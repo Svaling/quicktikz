@@ -6,6 +6,8 @@
     <file>icons/open.png</file>
     <file>icons/paste.png</file>
     <file>icons/save.png</file>
+    <file>icons/edit-redo.ico</file>
+    <file>icons/edit-undo.ico</file>
 
     <file>translations/qt_zh_CN.qm</file>
     <file>translations/quicktikz_zh_CN.qm</file>

@@ -2,12 +2,12 @@
 #-*-coding:utf-8-*-
 
 
-"""quicktikz模块"""
+"""quicktikz 让你快速tikz制图"""
 
 
 
 __softname__ = 'quicktikz'
-__version__ = '0.04'
+__version__ = '0.05'
 
 
 

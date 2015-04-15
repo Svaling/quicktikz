@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
 
         self.mainUi = loadUi(ui_path("quicktikz","main.ui"), self)
 
-        #中间窗体
+############中间窗体
         self.mainLayout = QHBoxLayout()
         self.centralWidget = QWidget()
         self.centralWidget.setLayout(self.mainLayout)
@@ -72,7 +72,12 @@ class MainWindow(QMainWindow):
         self.mainUi.action_SavePdf.triggered.connect(self.savePdf)
         self.mainUi.action_SavePng.triggered.connect(self.savePng)
 
-############textedit cut copy and paste
+############textedit
+#############undo redo
+        self.mainUi.action_Undo.triggered.connect(self.textEdit.undo)
+        self.mainUi.action_Redo.triggered.connect(self.textEdit.redo)
+
+#############cut copy and paste
         self.mainUi.action_Cut.triggered.connect(self.textEdit.cut)
         self.mainUi.action_Copy.triggered.connect(self.textEdit.copy)
         self.mainUi.action_Paste.triggered.connect(self.textEdit.paste)
@@ -82,6 +87,47 @@ class MainWindow(QMainWindow):
         self.textEdit.copyAvailable.connect(self.getaction_Cut().setEnabled)
         self.textEdit.copyAvailable.connect(self.getaction_Copy().setEnabled)
 
+
+###############insert
+        self.mainUi.action_begin_tikzpicture.triggered.connect(
+            lambda bool,
+            string='\\begin{tikzpicture}\n\n\\end{tikzpicture}':
+                self.textEdit.insert(string))
+        self.mainUi.action_begin_scope.triggered.connect(
+            lambda bool,
+            string='\\begin{scope}\n\n\\end{scope}':
+                self.textEdit.insert(string))
+        self.mainUi.action_draw_grid.triggered.connect(
+            lambda bool,
+            string='\\draw[] ( , ) grid ( , );':
+                self.textEdit.insert(string))
+        self.mainUi.action_draw_line.triggered.connect(
+            lambda bool,
+            string='\\draw[] ( , ) -- ( , );':
+                self.textEdit.insert(string))
+
+        self.mainUi.action_draw_circle.triggered.connect(
+            lambda bool,
+            string='\\draw[] ( , ) circle ( );':
+                self.textEdit.insert(string))
+        self.mainUi.action_draw_ellipse.triggered.connect(
+            lambda bool,
+            string='\\draw[] ( , ) ellipse ( and );':
+                self.textEdit.insert(string))
+        self.mainUi.action_draw_arc.triggered.connect(
+            lambda bool,
+            string='\\draw[] ( , ) arc ( : : : and);':
+                self.textEdit.insert(string))
+######
+        self.mainUi.action_shade_circle.triggered.connect(
+            lambda bool,
+            string='\\shade[] ( , ) circle ( );':
+                self.textEdit.insert(string))
+
+        self.mainUi.action_command_coordinate.triggered.connect(
+            lambda bool,
+            string='\\coordinate ( name ) at ( , );':
+                self.textEdit.insert(string))
 ###########config
         self.mainUi.action_Template.triggered.connect(self.choose_template)
 
@@ -252,13 +298,25 @@ class MainWindow(QMainWindow):
 
 ############################
 from PyQt5.Qsci import QsciScintilla
+from PyQt5.Qsci import QsciLexerTeX
+
 class TextEdit(QsciScintilla):
     title_changed = pyqtSignal(str)
 
     def __init__(self,parent=None):
         super().__init__(parent)
 
-        self.setUtf8(True)
+        self.setUtf8(True)#默认utf-8编码
+#################额外的编辑器配置，后面大多会加入配置文件中
+        self.defaultmargin = 1
+        self.setMarginLineNumbers(self.defaultmargin, True)##显示行号
+        self.setMarginWidth(self.defaultmargin, '0000')##行号margin宽度
+        self.setTabWidth(4)###Tab宽度
+        self.setIndentationsUseTabs(False)##不用Tab indent
+     ##   self.setFont('微软雅黑')
+    #    tikzLexer = QsciLexerTeX()
+     #   self.setLexer(tikzLexer)
+
 
 
     @pyqtSlot()
