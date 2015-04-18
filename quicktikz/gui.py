@@ -25,13 +25,14 @@ ItalicFont=Adobe 楷体 Std]{Adobe 宋体 Std}
 '''
 
 class MainWindow(QMainWindow):
-    templates = []
+    templates = []###模板列表
+
     def __init__(self,parent=None, *args):
         super().__init__(parent, *args)
 
         self.curFile = ''
         self.dpi = 90
-        self.template = default_template
+        self.template = default_template###目前在使用的模板
 
         self.mainUi = loadUi(ui_path("quicktikz","main.ui"), self)
 
@@ -133,7 +134,7 @@ class MainWindow(QMainWindow):
                 self.textEdit.insert(string))
 ###########config
         self.mainUi.action_Template.triggered.connect(self.choose_template)
-
+        self.mainUi.action_Options.triggered.connect(self.set_options)
 ############statusbar
         self.statusBar().showMessage(self.tr("Ready..."))
 
@@ -250,6 +251,11 @@ class MainWindow(QMainWindow):
         self.template_chooser.changetemplates.connect(self.change_template)
         self.template_chooser.show()
 
+    @pyqtSlot()
+    def set_options(self):
+        self.options = Options(parent = self)
+        self.options.show()
+
     @pyqtSlot(list,int)
     def change_template(self, templates, index):
         print(templates)
@@ -262,8 +268,12 @@ class MainWindow(QMainWindow):
         size = settings.value("size", QSize(400, 400))
         self.resize(size)
         self.move(pos)
-        #
+        #read the templates
         self.templates = settings.value("templates",[default_template])
+        #read the editor font
+        self.textEdit.font = settings.value("font")
+        self.textEdit.setFont(settings.value("font"))
+        self.textEdit.setMarginsFont(settings.value("font"))
 
     def writeSettings(self):
         settings = QSettings("QuickTikz", "quicktikz")
@@ -271,7 +281,8 @@ class MainWindow(QMainWindow):
         settings.setValue("size", self.size())
         #templates save
         settings.setValue("templates",self.templates)
-
+        ###目前编辑器字体保存
+        settings.setValue("font",self.textEdit.font)
 
     def setCurrentFile(self, fileName):
         self.curFile = fileName
@@ -320,10 +331,23 @@ class TextEdit(QsciScintilla):
         self.setMarginWidth(self.defaultmargin, '0000')##行号margin宽度
         self.setTabWidth(4)###Tab宽度
         self.setIndentationsUseTabs(False)##不用Tab indent
-     ##   self.setFont('微软雅黑')
     #    tikzLexer = QsciLexerTeX()
      #   self.setLexer(tikzLexer)
 
+        self.font = QFont("Ubuntu",11)
+
+
+    @pyqtSlot(QFont)
+    def change_font(self, font):
+        self.font = font
+        self.setFont(font)
+        self.setMarginsFont(font)
+
+    @pyqtSlot(int)
+    def change_fontsize(self,size):
+        self.font.setPointSize(size)
+        self.setFont(self.font)
+        self.setMarginsFont(self.font)
 
 
     @pyqtSlot()
@@ -420,6 +444,8 @@ class ImageView(QWidget):
         else:
             pass
 
+
+
 class TemplateChooser(QDialog):
     changetemplates = pyqtSignal(list, int)
 
@@ -447,6 +473,20 @@ class TemplateChooser(QDialog):
             templates.append(editor.toPlainText())
 
         self.changetemplates.emit(templates, current_index)
+
+
+class Options(QDialog):
+    def __init__(self,parent=None,*args):
+        super().__init__(parent,*args)
+
+        self.mainUi = loadUi(ui_path("quicktikz","options.ui"),self)
+
+        ####一些配置反射弧 立即生效
+        ####以fontsize为例，信号释放连接到编辑器的修改字体大小，就这样简单处理。
+        self.mainUi.fontComboBox.currentFontChanged.connect(self.parent().textEdit.change_font)#######引用自己的母窗体
+
+        self.mainUi.fontsizeSpinBox.valueChanged.connect(self.parent().textEdit.change_fontsize)#######引用自己的母窗体
+
 
 
 
