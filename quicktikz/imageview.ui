@@ -60,7 +60,7 @@
      <item>
       <widget class="QPushButton" name="pushButton_3">
        <property name="text">
-        <string>Origin</string>
+        <string>ZoomOrigin</string>
        </property>
       </widget>
      </item>

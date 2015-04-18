@@ -62,9 +62,11 @@
     <addaction name="action_Compile"/>
     <addaction name="separator"/>
     <addaction name="action_ZoomIn"/>
+    <addaction name="action_ZoomOrigin"/>
     <addaction name="action_ZoomOut"/>
     <addaction name="separator"/>
     <addaction name="action_DpiIn"/>
+    <addaction name="action_DpiOrigin"/>
     <addaction name="action_DpiOut"/>
    </widget>
    <widget class="QMenu" name="menu_Config">
@@ -349,6 +351,16 @@
   <action name="action_shade_circle">
    <property name="text">
     <string>circle</string>
+   </property>
+  </action>
+  <action name="action_ZoomOrigin">
+   <property name="text">
+    <string>ZoomOrigin</string>
+   </property>
+  </action>
+  <action name="action_DpiOrigin">
+   <property name="text">
+    <string>DpiOrigin</string>
    </property>
   </action>
  </widget>

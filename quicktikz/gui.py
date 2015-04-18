@@ -49,9 +49,12 @@ class MainWindow(QMainWindow):
         self.mainUi.action_Compile.triggered.connect(self.compileFile)
 
         self.mainUi.action_ZoomIn.triggered.connect(self.previewer.zoomIn)
+        self.mainUi.action_ZoomOrigin.triggered.connect(self.previewer.zoomOrigin)
         self.mainUi.action_ZoomOut.triggered.connect(self.previewer.zoomOut)
 
         self.mainUi.action_DpiIn.triggered.connect(self.dpiIn)
+        self.mainUi.action_DpiOrigin.triggered.connect(self.dpiOrigin)
+        self.mainUi.action_DpiOut.triggered.connect(self.dpiOut)
 
 #######################editor
         self.mainUi.action_About.triggered.connect(self.about)
@@ -185,6 +188,10 @@ class MainWindow(QMainWindow):
     @pyqtSlot()
     def dpiOut(self):
         self.dpi -= 60
+        self.compileFile()
+    @pyqtSlot()
+    def dpiOrigin(self):
+        self.dpi = 90
         self.compileFile()
 
 
@@ -386,12 +393,13 @@ class ImageView(QWidget):
 
         self.mainUi = loadUi(ui_path("quicktikz","imageview.ui"), self)
 
-        self.scene = QGraphicsScene()
-        self.mainUi.graphicsView.setScene(self.scene)
 
         self.viewcount = 0
 
     def loadImage(self,filename):
+        self.scene = QGraphicsScene()
+        self.mainUi.graphicsView.setScene(self.scene)
+        #self.scene.clear()
         pic = QPixmap(filename)
         self.scene.addItem(QGraphicsPixmapItem(pic))
 
