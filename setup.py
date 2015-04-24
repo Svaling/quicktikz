@@ -5,7 +5,7 @@ from setuptools import setup ,find_packages
 
 setup(
   name='quicktikz',
-  version='0.06',
+  version='0.07',
   description='the software short description',
   url='https://github.com/a358003542/quicktikz',
   author='wanze',

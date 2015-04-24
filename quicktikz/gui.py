@@ -96,42 +96,42 @@ class MainWindow(QMainWindow):
         self.mainUi.action_begin_tikzpicture.triggered.connect(
             lambda bool,
             string='\\begin{tikzpicture}\n\n\\end{tikzpicture}':
-                self.textEdit.insert(string))
+                self.insert(string,linemove= 1))
         self.mainUi.action_begin_scope.triggered.connect(
             lambda bool,
             string='\\begin{scope}\n\n\\end{scope}':
-                self.textEdit.insert(string))
+                self.insert(string, linemove = 1))
         self.mainUi.action_draw_grid.triggered.connect(
             lambda bool,
             string='\\draw[] ( , ) grid ( , );':
-                self.textEdit.insert(string))
+                self.insert(string, indexmove = 10))
         self.mainUi.action_draw_line.triggered.connect(
             lambda bool,
             string='\\draw[] ( , ) -- ( , );':
-                self.textEdit.insert(string))
+                self.insert(string, indexmove = 10))
 
         self.mainUi.action_draw_circle.triggered.connect(
             lambda bool,
             string='\\draw[] ( , ) circle ( );':
-                self.textEdit.insert(string))
+                self.insert(string, indexmove = 10))
         self.mainUi.action_draw_ellipse.triggered.connect(
             lambda bool,
             string='\\draw[] ( , ) ellipse ( and );':
-                self.textEdit.insert(string))
+                self.insert(string, indexmove = 10))
         self.mainUi.action_draw_arc.triggered.connect(
             lambda bool,
             string='\\draw[] ( , ) arc ( : : : and);':
-                self.textEdit.insert(string))
+                self.insert(string, indexmove = 10))
 ######
         self.mainUi.action_shade_circle.triggered.connect(
             lambda bool,
             string='\\shade[] ( , ) circle ( );':
-                self.textEdit.insert(string))
+                self.insert(string, indexmove = 10))
 
         self.mainUi.action_command_coordinate.triggered.connect(
             lambda bool,
             string='\\coordinate ( name ) at ( , );':
-                self.textEdit.insert(string))
+                self.insert(string, indexmove = 14))
 ###########config
         self.mainUi.action_Template.triggered.connect(self.choose_template)
         self.mainUi.action_Options.triggered.connect(self.set_options)
@@ -141,6 +141,14 @@ class MainWindow(QMainWindow):
         self.readSettings()
 
         self.setCurrentFile('')
+
+
+    def insert(self,string, linemove = 0, indexmove = 0):
+        self.textEdit.insert(string)
+        line = 0
+        index = 0
+        line, index = self.textEdit.getCursorPosition()
+        self.textEdit.setCursorPosition(line+linemove, index+indexmove)
 
     @pyqtSlot()
     def compileFile(self):
@@ -335,6 +343,8 @@ class TextEdit(QsciScintilla):
      #   self.setLexer(tikzLexer)
 
         self.font = QFont("Ubuntu",11)
+        self.setWrapMode(self.SC_WRAP_WORD)##自动换行
+
 
 
     @pyqtSlot(QFont)
