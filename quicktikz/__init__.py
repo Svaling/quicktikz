@@ -7,7 +7,7 @@
 
 
 __softname__ = 'quicktikz'
-__version__ = '0.07'
+__version__ = '0.08'
 
 
 

@@ -8,6 +8,7 @@ from PyQt5.uic import loadUi
 
 from quicktikz import main_rc
 import os
+import sys
 
 def ui_path(module,uiname):
     from pkg_resources import resource_filename
@@ -31,6 +32,7 @@ class MainWindow(QMainWindow):
         super().__init__(parent, *args)
 
         self.curFile = ''
+        self.loginfo = ''#
         self.dpi = 90
         self.template = default_template###目前在使用的模板
 
@@ -134,6 +136,7 @@ class MainWindow(QMainWindow):
                 self.insert(string, indexmove = 14))
 ###########config
         self.mainUi.action_Template.triggered.connect(self.choose_template)
+        self.mainUi.action_Loginfo.triggered.connect(self.show_loginfo)
         self.mainUi.action_Options.triggered.connect(self.set_options)
 ############statusbar
         self.statusBar().showMessage(self.tr("Ready..."))
@@ -180,14 +183,23 @@ class MainWindow(QMainWindow):
         outf << r"\end{document}"
         file.close()
 
-        subprocess.call(['xelatex','-synctex=1',
-        '--enable-write18','-interaction=nonstopmode','-output-directory={outputdir}'.format(outputdir=self.outputdir),temp_texfile])
+        p = subprocess.Popen(['xelatex','-synctex=1',
+        '--enable-write18','-interaction=nonstopmode','-output-directory={outputdir}'.format(outputdir=self.outputdir),temp_texfile], stdout = subprocess.PIPE)
+
+        self._loginfo,_ = p.communicate()
+        self.loginfo = self._loginfo.decode('utf-8')
 
         temp_pdffile = os.path.join(self.outputdir,'temp.pdf')
         subprocess.call(['pdftoppm','-png','-singlefile','-r',str(dpi),temp_pdffile, self.outputdir+'/temp'])
 
         temp_pngfile = os.path.join(self.outputdir,'temp.png')
         self.previewer.loadImage(temp_pngfile)
+
+    @pyqtSlot()
+    def show_loginfo(self):
+        loginfo = Loginfo()
+        loginfo.show_info(self.loginfo)
+        loginfo.exec()
 
 
     @pyqtSlot()
@@ -497,6 +509,15 @@ class Options(QDialog):
 
         self.mainUi.fontsizeSpinBox.valueChanged.connect(self.parent().textEdit.change_fontsize)#######引用自己的母窗体
 
+
+class Loginfo(QDialog):
+    def __init__(self,parent=None,*args):
+        super().__init__(parent,*args)
+
+        self.mainUi = loadUi(ui_path("quicktikz","loginfo.ui"),self)
+
+    def show_info(self,string):
+        self.mainUi.textEdit.setText(string)
 
 
 

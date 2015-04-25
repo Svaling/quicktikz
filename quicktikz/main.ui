@@ -13,7 +13,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <zorder>textBrowser</zorder>
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
@@ -74,6 +76,7 @@
      <string>&amp;Config</string>
     </property>
     <addaction name="action_Template"/>
+    <addaction name="action_Loginfo"/>
     <addaction name="separator"/>
     <addaction name="action_Options"/>
    </widget>
@@ -361,6 +364,11 @@
   <action name="action_DpiOrigin">
    <property name="text">
     <string>DpiOrigin</string>
+   </property>
+  </action>
+  <action name="action_Loginfo">
+   <property name="text">
+    <string>Loginfo</string>
    </property>
   </action>
  </widget>

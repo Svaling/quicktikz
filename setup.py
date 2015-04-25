@@ -5,7 +5,7 @@ from setuptools import setup ,find_packages
 
 setup(
   name='quicktikz',
-  version='0.07',
+  version='0.08',
   description='the software short description',
   url='https://github.com/a358003542/quicktikz',
   author='wanze',
@@ -22,7 +22,8 @@ setup(
   'Programming Language :: Python :: 3.4',],
   packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
   include_package_data=True,
-  package_data = {"quicktikz":['main.ui','imageview.ui','template.ui','options.ui'],},
+  package_data = {"quicktikz":['main.ui','imageview.ui','template.ui',
+    'options.ui','loginfo.ui'],},
 #  install_requires=['click'],
 #  setup_requires,
   entry_points = {
