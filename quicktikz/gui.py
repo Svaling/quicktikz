@@ -291,9 +291,9 @@ class MainWindow(QMainWindow):
         #read the templates
         self.templates = settings.value("templates",[default_template])
         #read the editor font
-        self.textEdit.font = settings.value("font")
-        self.textEdit.setFont(settings.value("font"))
-        self.textEdit.setMarginsFont(settings.value("font"))
+        self.textEdit.font = settings.value("font", QFont("Ubuntu",11))
+        self.textEdit.setFont(self.textEdit.font)
+        self.textEdit.setMarginsFont(self.textEdit.font)
 
     def writeSettings(self):
         settings = QSettings("QuickTikz", "quicktikz")
